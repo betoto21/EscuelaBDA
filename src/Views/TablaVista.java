@@ -4,7 +4,13 @@ import Controller.AlumnoJpaController;
 import Models.Alumno;
 import Views.Alumnos.Agregar;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -34,7 +40,7 @@ public class TablaVista extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         txtBuscar = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         verAlumnos = new javax.swing.JRadioButtonMenuItem();
@@ -84,9 +90,20 @@ public class TablaVista extends javax.swing.JFrame {
             }
         });
 
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+
         jLabel1.setText("Buscar");
 
-        jButton5.setText("Buscar");
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         jMenu2.setText("Cambiar de Tabla");
 
@@ -139,7 +156,7 @@ public class TablaVista extends javax.swing.JFrame {
                 .addGap(79, 79, 79)
                 .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(34, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -164,7 +181,7 @@ public class TablaVista extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton5))
+                    .addComponent(btnBuscar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
@@ -227,6 +244,24 @@ public class TablaVista extends javax.swing.JFrame {
         mostrarTblAlumnos();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        String texto = txtBuscar.getText();
+        DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
+        AlumnoJpaController controlador = new AlumnoJpaController(emf);
+        List<Alumno> alumnosfiltrados = controlador.buscarAlumno(texto);
+        modelo.setRowCount(0);
+        for (int i = 0; i < alumnosfiltrados.size(); i++) {
+            Alumno alumno = alumnosfiltrados.get(i);
+            modelo.addRow(new Object[]{alumno.getId(),alumno.getNombre(), alumno.getIdAula(),
+            alumno.isActivo()?"Activo":"Baja"});
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -262,10 +297,10 @@ public class TablaVista extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup GrupoDeTablas;
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
