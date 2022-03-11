@@ -5,8 +5,10 @@ import Controller.GrupoJpaController;
 import Models.Alumno;
 import Models.Grupo;
 import Views.Alumnos.Agregar;
+import Views.Alumnos.Editar;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -15,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TablaVista extends javax.swing.JFrame {
    EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("EscuelaBDAPU");
+   int aula = 0;
     public TablaVista() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -76,6 +79,11 @@ public class TablaVista extends javax.swing.JFrame {
         });
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
 
@@ -198,7 +206,25 @@ public class TablaVista extends javax.swing.JFrame {
                 new String[]{}
         ));
     }
-    
+    private int getGrupo(int fila){
+        int id = 0;
+        List<Alumno> alumnos;
+        AlumnoJpaController objController = new AlumnoJpaController(emf);
+        alumnos = objController.findAlumnoEntities();
+        for (int i = 0; i < alumnos.size(); i++) {
+             if (alumnos.get(i).getNombre().equals(String.valueOf(this.tblPrincipal.getValueAt(fila, 2)))) {
+                id = alumnos.get(i).getIdAula();
+            }
+        }
+        return id;
+    }
+    private int getStatus(int fila){
+        String estatus = String.valueOf(this.tblPrincipal.getValueAt(fila, 3));
+        int Estado = 1;
+        if (estatus.equals(estatus)){}
+        else{Estado = 0;}
+        return Estado;
+    }
     public void mostrarTblAlumnos(){
         restablecerTabla();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
@@ -210,13 +236,22 @@ public class TablaVista extends javax.swing.JFrame {
         List<Alumno> alumnos;
         AlumnoJpaController objController = new AlumnoJpaController(emf);
         alumnos = objController.findAlumnoEntities();
+        List<Grupo> grupos;
+        GrupoJpaController control = new GrupoJpaController(emf);
+        grupos = control.findGrupoEntities();
+        String salon = "";
         for (int i = 0; i < alumnos.size(); i++) {
             Alumno alumno = alumnos.get(i);
-            modelo.addRow(new Object[]{alumno.getId(),alumno.getNombre(), alumno.getIdAula(),
+            for (int j = 0; j < grupos.size(); j++) {
+                Grupo x = grupos.get(j);
+                if (alumno.getIdAula() == x.getId()) {
+                    salon = x.getNombre();
+                }
+            }
+            modelo.addRow(new Object[]{alumno.getId(),alumno.getNombre(), salon,
             alumno.isActivo()?"Activo":"Baja"});
         }
     }
-    
     public void mostrarTblAulas(){
         restablecerTabla();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
@@ -234,25 +269,20 @@ public class TablaVista extends javax.swing.JFrame {
             grupo.isDisponible()?"Disponible":"No Disponible" });
         }
     }
-    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
-
     private void verAlumnosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAlumnosActionPerformed
         mostrarTblAlumnos();
     }//GEN-LAST:event_verAlumnosActionPerformed
-
     private void verAulasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAulasActionPerformed
         mostrarTblAulas();
     }//GEN-LAST:event_verAulasActionPerformed
-
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         Agregar x= new Agregar(this, true);
         x.setVisible(true);
         mostrarTblAlumnos();
     }//GEN-LAST:event_btnAgregarActionPerformed
-
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String texto = txtBuscar.getText();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
@@ -265,9 +295,23 @@ public class TablaVista extends javax.swing.JFrame {
             alumno.isActivo()?"Activo":"Baja"});
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
     }//GEN-LAST:event_txtBuscarActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        try{
+            int fila = tblPrincipal.getSelectedRow();
+            String idtextp = String.valueOf(this.tblPrincipal.getValueAt(fila, 0));
+            String Nombre = String.valueOf(this.tblPrincipal.getValueAt(fila, 1));
+            String Aula = String.valueOf(this.tblPrincipal.getValueAt(fila, 2));
+            int Estatustexto = getStatus(fila);
+            int id = Integer.valueOf(idtextp);
+            Editar x = new Editar(this,true,id,Nombre,Aula,Estatustexto);
+            x.setVisible(true);
+        }catch(Exception ex){
+            JOptionPane pan = new JOptionPane();
+            pan.showMessageDialog(null,"Selecciona una fila primero");
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
 
 
     
