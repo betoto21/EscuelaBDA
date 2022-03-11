@@ -1,16 +1,12 @@
 package Views;
 
 import Controller.AlumnoJpaController;
+import Controller.GrupoJpaController;
 import Models.Alumno;
+import Models.Grupo;
 import Views.Alumnos.Agregar;
 import java.util.List;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -225,7 +221,20 @@ public class TablaVista extends javax.swing.JFrame {
         restablecerTabla();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
         modelo.setRowCount(0);
+        modelo.addColumn("ID del Aula");
+        modelo.addColumn("Nombre del Aula");
+        modelo.addColumn("Capacidad");
+        modelo.addColumn("Disponibilidad");
+        List<Grupo> grupos;
+        GrupoJpaController control = new GrupoJpaController(emf);
+        grupos = control.findGrupoEntities();
+        for (int i = 0; i < grupos.size(); i++) {
+            Grupo grupo = grupos.get(i);
+            modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
+            grupo.isDisponible()?"Disponible":"No Disponible" });
+        }
     }
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
