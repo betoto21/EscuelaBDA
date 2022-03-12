@@ -8,7 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 /**
@@ -26,6 +28,24 @@ public class GrupoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
+    public List<Grupo> buscarGrupo(String fil){
+        EntityManager em = getEntityManager();
+        try{
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root<Grupo> c = cq.from(Grupo.class);
+            cq.select(c);
+            Predicate filtro = cb.like(c.get("NombreAula"), "%"+fil+"%");
+            Predicate activo = cb.equal(c.get("Disponibilidad"), 1);
+            Predicate where = cb.and(filtro,activo);
+            cq.where(where);
+            Query q = em.createQuery(cq);
+            return q.getResultList();
+        } finally{
+            em.close();
+        }
+    }
+    
     public void create(Grupo grupo) {
         EntityManager em = null;
         try {

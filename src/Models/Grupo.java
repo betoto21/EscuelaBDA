@@ -27,8 +27,6 @@ public class Grupo implements Serializable {
 
     public Grupo() {
     }
-
-    
     
     public Grupo(String Nombre, int Capacidad, int Disponibilidad) {
         this.NombreAula = Nombre;

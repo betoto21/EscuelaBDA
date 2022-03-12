@@ -306,16 +306,24 @@ public class TablaVista extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String texto = txtBuscar.getText();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
+        modelo.setRowCount(0);
         if (verAlumnos.isSelected()) {
             AlumnoJpaController controlador = new AlumnoJpaController(emf);
             List<Alumno> alumnosfiltrados = controlador.buscarAlumno(texto);
-            modelo.setRowCount(0);
             for (int i = 0; i < alumnosfiltrados.size(); i++) {
                 Alumno alumno = alumnosfiltrados.get(i);
                 modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), alumno.getIdAula(),
                     alumno.isActivo() ? "Activo" : "Baja"});
             }
         }else{
+            List<Grupo> gruposfiltrados;
+            GrupoJpaController control = new GrupoJpaController(emf);
+            gruposfiltrados = control.buscarGrupo(texto);
+            for (int i = 0; i < gruposfiltrados.size(); i++) {
+                Grupo grupo = gruposfiltrados.get(i);
+                modelo.addRow(new Object[]{grupo.getId(),grupo.getNombre(),grupo.getCapacidad(),
+                    grupo.isDisponible()?"Disponible":"No Disponible"});
+            }
         }
 
     }//GEN-LAST:event_btnBuscarActionPerformed
