@@ -22,13 +22,13 @@ public class Alumno implements Serializable {
     @Column( name = "IdAlumno")
     private Long id;
     private String Nombre;
-    private int IdAula;
+    private long IdAula;
     private int Activo;
 
     public Alumno() {
     }
 
-    public Alumno(String Nombre, int IdAula, int Activo) {
+    public Alumno(String Nombre, long IdAula, int Activo) {
         this.Nombre = Nombre;
         this.IdAula = IdAula;
         this.Activo = Activo;
@@ -44,7 +44,7 @@ public class Alumno implements Serializable {
         this.Nombre = Nombre;
     }
 
-    public int getIdAula() {
+    public long getIdAula() {
         return IdAula;
     }
 

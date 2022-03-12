@@ -6,6 +6,7 @@ import Models.Alumno;
 import Models.Grupo;
 import Views.Alumnos.Agregar;
 import Views.Alumnos.Editar;
+import Views.Alumnos.Eliminar;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
@@ -21,7 +22,7 @@ public class TablaVista extends javax.swing.JFrame {
     public TablaVista() {
         initComponents();
         this.setLocationRelativeTo(null);
-        mostrarTblAlumnos();
+        mostrarTablas();
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +69,15 @@ public class TablaVista extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblPrincipal);
 
         btnAgregar.setText("Agregar");
@@ -86,6 +95,11 @@ public class TablaVista extends javax.swing.JFrame {
         });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnSalir.setText("Salir");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -206,8 +220,8 @@ public class TablaVista extends javax.swing.JFrame {
                 new String[]{}
         ));
     }
-    private int getGrupo(int fila){
-        int id = 0;
+    private long getGrupo(int fila){
+        long id = 0;
         List<Alumno> alumnos;
         AlumnoJpaController objController = new AlumnoJpaController(emf);
         alumnos = objController.findAlumnoEntities();
@@ -225,80 +239,89 @@ public class TablaVista extends javax.swing.JFrame {
         else{Estado = 0;}
         return Estado;
     }
-    public void mostrarTblAlumnos(){
+    public void mostrarTablas(){
         restablecerTabla();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
         modelo.setRowCount(0);
-        modelo.addColumn("ID del Alumno");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Grupo");
-        modelo.addColumn("Estatus");
-        List<Alumno> alumnos;
-        AlumnoJpaController objController = new AlumnoJpaController(emf);
-        alumnos = objController.findAlumnoEntities();
-        List<Grupo> grupos;
-        GrupoJpaController control = new GrupoJpaController(emf);
-        grupos = control.findGrupoEntities();
-        String salon = "";
-        for (int i = 0; i < alumnos.size(); i++) {
-            Alumno alumno = alumnos.get(i);
-            for (int j = 0; j < grupos.size(); j++) {
-                Grupo x = grupos.get(j);
-                if (alumno.getIdAula() == x.getId()) {
-                    salon = x.getNombre();
+        if (verAlumnos.isSelected()) {
+            modelo.addColumn("ID del Alumno");
+            modelo.addColumn("Nombre");
+            modelo.addColumn("Grupo");
+            modelo.addColumn("Estatus");
+            List<Alumno> alumnos;
+            AlumnoJpaController objController = new AlumnoJpaController(emf);
+            alumnos = objController.findAlumnoEntities();
+            List<Grupo> grupos;
+            GrupoJpaController control = new GrupoJpaController(emf);
+            grupos = control.findGrupoEntities();
+            String salon = "";
+            for (int i = 0; i < alumnos.size(); i++) {
+                Alumno alumno = alumnos.get(i);
+                for (int j = 0; j < grupos.size(); j++) {
+                    Grupo x = grupos.get(j);
+                    if (alumno.getIdAula() == x.getId()) {
+                        salon = x.getNombre();
+                    }
                 }
+                modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), salon,
+                    alumno.isActivo() ? "Activo" : "Baja"});
             }
-            modelo.addRow(new Object[]{alumno.getId(),alumno.getNombre(), salon,
-            alumno.isActivo()?"Activo":"Baja"});
+        } else{
+            modelo.addColumn("ID del Aula");
+            modelo.addColumn("Nombre del Aula");
+            modelo.addColumn("Capacidad");
+            modelo.addColumn("Disponibilidad");
+            List<Grupo> grupos;
+            GrupoJpaController control = new GrupoJpaController(emf);
+            grupos = control.findGrupoEntities();
+            for (int i = 0; i < grupos.size(); i++) {
+                Grupo grupo = grupos.get(i);
+                modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
+                    grupo.isDisponible() ? "Disponible" : "No Disponible"});
+            }
         }
     }
-    public void mostrarTblAulas(){
-        restablecerTabla();
-        DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
-        modelo.setRowCount(0);
-        modelo.addColumn("ID del Aula");
-        modelo.addColumn("Nombre del Aula");
-        modelo.addColumn("Capacidad");
-        modelo.addColumn("Disponibilidad");
-        List<Grupo> grupos;
-        GrupoJpaController control = new GrupoJpaController(emf);
-        grupos = control.findGrupoEntities();
-        for (int i = 0; i < grupos.size(); i++) {
-            Grupo grupo = grupos.get(i);
-            modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
-            grupo.isDisponible()?"Disponible":"No Disponible" });
-        }
-    }
+   
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
     private void verAlumnosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAlumnosActionPerformed
-        mostrarTblAlumnos();
+        mostrarTablas();
     }//GEN-LAST:event_verAlumnosActionPerformed
     private void verAulasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAulasActionPerformed
-        mostrarTblAulas();
+        mostrarTablas();
     }//GEN-LAST:event_verAulasActionPerformed
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        Agregar x= new Agregar(this, true);
-        x.setVisible(true);
-        mostrarTblAlumnos();
+        if (verAlumnos.isSelected()) {
+            long id = tblPrincipal.getRowCount() + 3;
+            Agregar x = new Agregar(this, true,id);
+            x.setVisible(true);
+            mostrarTablas();
+        }else{
+        
+        }
     }//GEN-LAST:event_btnAgregarActionPerformed
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String texto = txtBuscar.getText();
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
-        AlumnoJpaController controlador = new AlumnoJpaController(emf);
-        List<Alumno> alumnosfiltrados = controlador.buscarAlumno(texto);
-        modelo.setRowCount(0);
-        for (int i = 0; i < alumnosfiltrados.size(); i++) {
-            Alumno alumno = alumnosfiltrados.get(i);
-            modelo.addRow(new Object[]{alumno.getId(),alumno.getNombre(), alumno.getIdAula(),
-            alumno.isActivo()?"Activo":"Baja"});
+        if (verAlumnos.isSelected()) {
+            AlumnoJpaController controlador = new AlumnoJpaController(emf);
+            List<Alumno> alumnosfiltrados = controlador.buscarAlumno(texto);
+            modelo.setRowCount(0);
+            for (int i = 0; i < alumnosfiltrados.size(); i++) {
+                Alumno alumno = alumnosfiltrados.get(i);
+                modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), alumno.getIdAula(),
+                    alumno.isActivo() ? "Activo" : "Baja"});
+            }
+        }else{
         }
+
     }//GEN-LAST:event_btnBuscarActionPerformed
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
     }//GEN-LAST:event_txtBuscarActionPerformed
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         try{
+            if (verAlumnos.isSelected()) {
             int fila = tblPrincipal.getSelectedRow();
             String idtextp = String.valueOf(this.tblPrincipal.getValueAt(fila, 0));
             String Nombre = String.valueOf(this.tblPrincipal.getValueAt(fila, 1));
@@ -307,11 +330,35 @@ public class TablaVista extends javax.swing.JFrame {
             int id = Integer.valueOf(idtextp);
             Editar x = new Editar(this,true,id,Nombre,Aula,Estatustexto);
             x.setVisible(true);
+        } else{
+                //TODO
+        }
         }catch(Exception ex){
             JOptionPane pan = new JOptionPane();
             pan.showMessageDialog(null,"Selecciona una fila primero");
         }
+        mostrarTablas();
     }//GEN-LAST:event_btnModificarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        try{
+            if (verAlumnos.isSelected()) {
+            int fila = tblPrincipal.getSelectedRow();
+            String idtextp = String.valueOf(this.tblPrincipal.getValueAt(fila, 0));
+            String Nombre = String.valueOf(this.tblPrincipal.getValueAt(fila, 1));
+            String Aula = String.valueOf(this.tblPrincipal.getValueAt(fila, 2));
+            int Estatustexto = getStatus(fila);
+            int id = Integer.valueOf(idtextp);
+            Eliminar x = new Eliminar(this,true,id,Nombre,Aula,Estatustexto);
+            x.setVisible(true);
+        } else{
+                //TODO
+        }
+        }catch(Exception ex){
+            JOptionPane pan = new JOptionPane();
+            pan.showMessageDialog(null,"Selecciona una fila primero");
+        }
+        mostrarTablas();
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
 
     

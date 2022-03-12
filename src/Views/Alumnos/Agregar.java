@@ -16,6 +16,14 @@ public class Agregar extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         llenarCombos();
     }
+    long id;
+    public Agregar(java.awt.Frame parent, boolean modal, long id) {
+        super(parent, modal);
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.id = id;
+        llenarCombos();
+    }
     
     private int getStatus(){
         String estatus = (String) boxEstatus.getSelectedItem();
@@ -148,8 +156,9 @@ public class Agregar extends javax.swing.JDialog {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
        String Nombre = txtNombre.getText();
        int IdAula = getGrupo();
-       int Estatus = getStatus();
+       int Estatus = 1;
        Alumno alumno = new Alumno(Nombre,IdAula,Estatus);
+       alumno.setId(id);
        AlumnoJpaController objController = new AlumnoJpaController(emf);
        objController.create(alumno);
        this.dispose();

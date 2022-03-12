@@ -5,45 +5,63 @@ import Controller.GrupoJpaController;
 import Models.Alumno;
 import Models.Grupo;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 
 public class Eliminar extends javax.swing.JDialog {
 
     EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("EscuelaBDAPU");
-    public Eliminar(java.awt.Frame parent, boolean modal) {
+    private int id;
+    private String Nombre;
+    private String Aula;
+    private int Estatus;
+    
+    public Eliminar(java.awt.Frame parent, boolean modal,int id,String Nombre,String Aula,int Estatus) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         llenarCombos();
+        this.id = id;
+        this.Nombre = Nombre;
+        this.Aula = Aula;
+        this.Estatus = Estatus;
+        llenarCampos();
+    }
+    
+    public Eliminar(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
     }
     
     private int getStatus(){
-        String estatus = (String) boxEstatus.getSelectedItem();
+//        String estatus = (String) boxEstatus.getSelectedItem();
         int Estado = 1;
-        if (estatus.equals(estatus)){}
-        else{Estado = 0;}
+//        if (estatus.equals(estatus)){}
+//        else{Estado = 0;}
         return Estado;
     }
-    private int getGrupo(){
+    private long getGrupo(){
         GrupoJpaController control = new GrupoJpaController(emf);
         List<Grupo> grupos = control.findGrupoEntities();
         String texto = (String) boxGrupo.getSelectedItem();
         long Grupo = 0;
         int contador = 0;
         Grupo x ;
-        do{
-            x = grupos.get(contador);
-            if(texto.equals(x.getNombre())){
+        boolean buscar = true;
+        for (int i = 0; buscar ;i++ ) {
+            x = grupos.get(i);
+            if (texto.equals(x.getNombre())) {
                 Grupo = x.getId();
-            }
-        }while(texto.compareTo(texto) != 0);
-        return (int)Grupo;
+                break;
+            }else{continue;}
+        }
+        return Grupo;
     }
-     private void llenarCombos(){
+    private void llenarCombos(){
          String[] arr = new String[2];
          arr[0] = "Activo";
          arr[1] = "Inactivo"; 
-         boxEstatus.setModel(new javax.swing.DefaultComboBoxModel<>(arr));
          
          GrupoJpaController control = new GrupoJpaController(emf);
          List<Grupo> grupos = control.findGrupoEntities();
@@ -54,17 +72,20 @@ public class Eliminar extends javax.swing.JDialog {
          }
          boxGrupo.setModel(new javax.swing.DefaultComboBoxModel<>(arr2));
      }
+     
+    private void llenarCampos(){
+        txtNombre.setText(String.valueOf(Nombre));
+        boxGrupo.setSelectedItem(Aula);
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        boxEstatus = new javax.swing.JComboBox<>();
         boxGrupo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -73,7 +94,7 @@ public class Eliminar extends javax.swing.JDialog {
 
         jLabel2.setText("Grupo:");
 
-        jLabel3.setText("Estatus:");
+        txtNombre.setEditable(false);
 
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -89,11 +110,7 @@ public class Eliminar extends javax.swing.JDialog {
             }
         });
 
-        boxEstatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boxEstatusActionPerformed(evt);
-            }
-        });
+        boxGrupo.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,15 +120,11 @@ public class Eliminar extends javax.swing.JDialog {
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(boxGrupo, javax.swing.GroupLayout.Alignment.LEADING, 0, 204, Short.MAX_VALUE)
-                        .addComponent(boxEstatus, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(boxGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(121, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -131,11 +144,7 @@ public class Eliminar extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(boxGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(boxEstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(82, 82, 82)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEliminar)
                     .addComponent(btnCancelar))
@@ -147,21 +156,22 @@ public class Eliminar extends javax.swing.JDialog {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
        String Nombre = txtNombre.getText();
-       int IdAula = getGrupo();
-       int Estatus = getStatus();
+       long IdAula = getGrupo();
+       int Estatus = 0;
        Alumno alumno = new Alumno(Nombre,IdAula,Estatus);
+       alumno.setId((long)id);
        AlumnoJpaController objController = new AlumnoJpaController(emf);
-       objController.create(alumno);
+        try {
+            objController.edit(alumno);
+        } catch (Exception ex) {
+            Logger.getLogger(Editar.class.getName()).log(Level.SEVERE, null, ex);
+        }
        this.dispose();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
-
-    private void boxEstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxEstatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_boxEstatusActionPerformed
 
     /**
      * @param args the command line arguments
@@ -207,13 +217,11 @@ public class Eliminar extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> boxEstatus;
     private javax.swing.JComboBox<String> boxGrupo;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }

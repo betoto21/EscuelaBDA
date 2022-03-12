@@ -5,6 +5,8 @@ import Controller.GrupoJpaController;
 import Models.Alumno;
 import Models.Grupo;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 
 public class Editar extends javax.swing.JDialog {
@@ -31,31 +33,32 @@ public class Editar extends javax.swing.JDialog {
     private int getStatus(){
         String estatus = (String) boxEstatus.getSelectedItem();
         int Estado = 1;
-        if (estatus.equals(estatus)){}
+        if (estatus.equals("Activo")){}
         else{Estado = 0;}
         return Estado;
     }
-    private int getGrupo(){
+    private long getGrupo(){
         GrupoJpaController control = new GrupoJpaController(emf);
         List<Grupo> grupos = control.findGrupoEntities();
         String texto = (String) boxGrupo.getSelectedItem();
         long Grupo = 0;
         int contador = 0;
         Grupo x ;
-        do{
-            x = grupos.get(contador);
-            if(texto.equals(x.getNombre())){
+        boolean buscar = true;
+        for (int i = 0; buscar ;i++ ) {
+            x = grupos.get(i);
+            if (texto.equals(x.getNombre())) {
                 Grupo = x.getId();
-            }
-        }while(texto.compareTo(texto) != 0);
-        return (int)Grupo;
+                break;
+            }else{continue;}
+        }
+        return Grupo;
     }
     private void llenarCombos(){
          String[] arr = new String[2];
          arr[0] = "Activo";
          arr[1] = "Inactivo"; 
          boxEstatus.setModel(new javax.swing.DefaultComboBoxModel<>(arr));
-         
          GrupoJpaController control = new GrupoJpaController(emf);
          List<Grupo> grupos = control.findGrupoEntities();
          String[] arr2 = new String[grupos.size()];
@@ -157,16 +160,27 @@ public class Editar extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     private void llenarCampos(){
         txtNombre.setText(String.valueOf(Nombre));
-        if(getStatus() != 1){boxEstatus.setSelectedItem(0);}
+        String texto = (String) boxEstatus.getSelectedItem();
+        if(texto.equals("Activo")){
+            boxEstatus.setSelectedIndex(0);
+        }else{
+         boxEstatus.setSelectedIndex(1);
+        }
         boxGrupo.setSelectedItem(Aula);
     }
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
        String Nombre = txtNombre.getText();
-       int IdAula = getGrupo();
+       long IdAula = getGrupo();
+        System.out.println(IdAula);
        int Estatus = getStatus();
        Alumno alumno = new Alumno(Nombre,IdAula,Estatus);
+       alumno.setId((long)id);
        AlumnoJpaController objController = new AlumnoJpaController(emf);
-       objController.create(alumno);
+        try {
+            objController.edit(alumno);
+        } catch (Exception ex) {
+            Logger.getLogger(Editar.class.getName()).log(Level.SEVERE, null, ex);
+        }
        this.dispose();
     }//GEN-LAST:event_btnEditarActionPerformed
 
