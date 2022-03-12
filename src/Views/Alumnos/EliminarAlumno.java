@@ -27,6 +27,7 @@ public class EliminarAlumno extends javax.swing.JDialog {
         this.Aula = Aula;
         this.Estatus = Estatus;
         llenarCampos();
+        this.setTitle("Eliminar Alumnos");
     }
     
     public EliminarAlumno(java.awt.Frame parent, boolean modal) {

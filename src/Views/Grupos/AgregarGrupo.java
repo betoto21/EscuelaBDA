@@ -12,6 +12,7 @@ public class AgregarGrupo extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        this.setTitle("Agregar Grupos");
     }
 
     private int getDispo(){

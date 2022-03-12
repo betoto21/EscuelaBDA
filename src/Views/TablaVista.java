@@ -36,6 +36,7 @@ public class TablaVista extends javax.swing.JFrame {
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jMenu1 = new javax.swing.JMenu();
         GrupoDeTablas = new javax.swing.ButtonGroup();
+        GrupoDeVisibles = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPrincipal = new javax.swing.JTable();
         btnAgregar = new javax.swing.JButton();
@@ -50,9 +51,9 @@ public class TablaVista extends javax.swing.JFrame {
         verAlumnos = new javax.swing.JRadioButtonMenuItem();
         verAulas = new javax.swing.JRadioButtonMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
+        verActivos = new javax.swing.JRadioButtonMenuItem();
+        verInactivos = new javax.swing.JRadioButtonMenuItem();
+        verAmbos = new javax.swing.JRadioButtonMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -152,17 +153,33 @@ public class TablaVista extends javax.swing.JFrame {
 
         jMenu3.setText("Ver");
 
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText("Ver solo Activos");
-        jMenu3.add(jRadioButtonMenuItem1);
+        GrupoDeVisibles.add(verActivos);
+        verActivos.setSelected(true);
+        verActivos.setText("Ver solo Activos");
+        verActivos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verActivosActionPerformed(evt);
+            }
+        });
+        jMenu3.add(verActivos);
 
-        jRadioButtonMenuItem2.setSelected(true);
-        jRadioButtonMenuItem2.setText("Ver Solo Inactivos");
-        jMenu3.add(jRadioButtonMenuItem2);
+        GrupoDeVisibles.add(verInactivos);
+        verInactivos.setText("Ver Solo Inactivos");
+        verInactivos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verInactivosActionPerformed(evt);
+            }
+        });
+        jMenu3.add(verInactivos);
 
-        jRadioButtonMenuItem3.setSelected(true);
-        jRadioButtonMenuItem3.setText("Ver Ambos");
-        jMenu3.add(jRadioButtonMenuItem3);
+        GrupoDeVisibles.add(verAmbos);
+        verAmbos.setText("Ver Ambos");
+        verAmbos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verAmbosActionPerformed(evt);
+            }
+        });
+        jMenu3.add(verAmbos);
 
         jMenuBar1.add(jMenu3);
 
@@ -248,6 +265,7 @@ public class TablaVista extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) tblPrincipal.getModel();
         modelo.setRowCount(0);
         if (verAlumnos.isSelected()) {
+            this.setTitle("Mostrando tabla de Alumnos");
             modelo.addColumn("ID del Alumno");
             modelo.addColumn("Nombre");
             modelo.addColumn("Grupo");
@@ -267,10 +285,19 @@ public class TablaVista extends javax.swing.JFrame {
                         salon = x.getNombre();
                     }
                 }
-                modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), salon,
+                if (verActivos.isSelected() && alumno.getActivo() == 1) {
+                    modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), salon,
                     alumno.isActivo() ? "Activo" : "Baja"});
+                }else if(verInactivos.isSelected() && alumno.getActivo() == 0){
+                    modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), salon,
+                    alumno.isActivo() ? "Activo" : "Baja"});
+                }else if(verAmbos.isSelected()){
+                    modelo.addRow(new Object[]{alumno.getId(), alumno.getNombre(), salon,
+                    alumno.isActivo() ? "Activo" : "Baja"});
+                }
             }
         } else{
+            this.setTitle("Mostrando tabla de Grupos");
             modelo.addColumn("ID del Aula");
             modelo.addColumn("Nombre del Aula");
             modelo.addColumn("Capacidad");
@@ -280,8 +307,16 @@ public class TablaVista extends javax.swing.JFrame {
             grupos = control.findGrupoEntities();
             for (int i = 0; i < grupos.size(); i++) {
                 Grupo grupo = grupos.get(i);
-                modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
+                if(verActivos.isSelected() && grupo.getDisponibilidad() == 1){
+                    modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
                     grupo.isDisponible() ? "Disponible" : "No Disponible"});
+                }else if(verInactivos.isSelected() && grupo.getDisponibilidad() == 0){
+                    modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
+                    grupo.isDisponible() ? "Disponible" : "No Disponible"});
+                } else if(verAmbos.isSelected()){
+                    modelo.addRow(new Object[]{grupo.getId(), grupo.getNombre(), grupo.getCapacidad(),
+                    grupo.isDisponible() ? "Disponible" : "No Disponible"});
+                }
             }
         }
     }
@@ -393,6 +428,18 @@ public class TablaVista extends javax.swing.JFrame {
         mostrarTablas();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void verActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActivosActionPerformed
+        mostrarTablas();
+    }//GEN-LAST:event_verActivosActionPerformed
+
+    private void verInactivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verInactivosActionPerformed
+        mostrarTablas();
+    }//GEN-LAST:event_verInactivosActionPerformed
+
+    private void verAmbosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verAmbosActionPerformed
+        mostrarTablas();
+    }//GEN-LAST:event_verAmbosActionPerformed
+
 
     
     public static void main(String args[]) {
@@ -429,6 +476,7 @@ public class TablaVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup GrupoDeTablas;
+    private javax.swing.ButtonGroup GrupoDeVisibles;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
@@ -440,13 +488,13 @@ public class TablaVista extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPopupMenu jPopupMenu1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblPrincipal;
     private javax.swing.JTextField txtBuscar;
+    private javax.swing.JRadioButtonMenuItem verActivos;
     private javax.swing.JRadioButtonMenuItem verAlumnos;
+    private javax.swing.JRadioButtonMenuItem verAmbos;
     private javax.swing.JRadioButtonMenuItem verAulas;
+    private javax.swing.JRadioButtonMenuItem verInactivos;
     // End of variables declaration//GEN-END:variables
 }

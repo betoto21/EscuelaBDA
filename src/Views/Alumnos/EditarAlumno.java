@@ -28,6 +28,7 @@ public class EditarAlumno extends javax.swing.JDialog {
         this.Aula = Aula;
         this.Estatus = Estatus;
         llenarCampos();
+        this.setTitle("Editar Alumnos");
     }
     
     private int getStatus(){

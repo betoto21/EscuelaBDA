@@ -15,6 +15,7 @@ public class AgregarAlumno extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(null);
         llenarCombos();
+        this.setTitle("Agregar Alumnos");
     }
     long id;
     public AgregarAlumno(java.awt.Frame parent, boolean modal, long id) {
@@ -23,6 +24,7 @@ public class AgregarAlumno extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         this.id = id;
         llenarCombos();
+        this.setTitle("Agregar Alumnos");
     }
     
     private int getStatus(){

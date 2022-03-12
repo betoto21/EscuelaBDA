@@ -26,6 +26,7 @@ public class EditarGrupo extends javax.swing.JDialog {
         this.Disponibilidad = Disponibilidad;
         this.setLocationRelativeTo(null);
         llenarcampos();
+        this.setTitle("Editar Grupos");
     }
     
     

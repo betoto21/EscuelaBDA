@@ -25,6 +25,7 @@ public class EliminarGrupo extends javax.swing.JDialog {
         this.Disponibilidad = Disponibilidad;
         this.setLocationRelativeTo(null);
         llenarcampos();
+        this.setTitle("Eliminar Grupos");
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
