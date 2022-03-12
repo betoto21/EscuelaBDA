@@ -10,6 +10,7 @@ import Views.Alumnos.EditarAlumno;
 import Views.Alumnos.EliminarAlumno;
 import Views.Grupos.AgregarGrupo;
 import Views.Grupos.EditarGrupo;
+import Views.Grupos.EliminarGrupo;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
@@ -372,8 +373,18 @@ public class TablaVista extends javax.swing.JFrame {
             int id = Integer.valueOf(idtextp);
             EliminarAlumno x = new EliminarAlumno(this,true,id,Nombre,Aula,Estatustexto);
             x.setVisible(true);
-        } else{
-                //TODO
+        } else if(verAulas.isSelected()){
+            int fila = tblPrincipal.getSelectedRow();
+            int dispo = 1;
+            String idtextp = String.valueOf(this.tblPrincipal.getValueAt(fila, 0));
+            String Nombre = String.valueOf(this.tblPrincipal.getValueAt(fila, 1));
+            String Capacidadtexto = String.valueOf(this.tblPrincipal.getValueAt(fila, 2));
+            String Disponibilidad = String.valueOf(tblPrincipal.getValueAt(fila, 3));
+            long Id = Long.valueOf(idtextp);
+            int Capa = Integer.valueOf(Capacidadtexto);
+            if (Disponibilidad.equals("Disponible")) {}else{dispo = 0;}
+            EliminarGrupo x = new EliminarGrupo(this,true,Id,Nombre,Capa,dispo);
+            x.setVisible(true);
         }
         }catch(Exception ex){
             JOptionPane pan = new JOptionPane();
