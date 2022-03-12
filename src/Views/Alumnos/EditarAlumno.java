@@ -5,54 +5,60 @@ import Controller.GrupoJpaController;
 import Models.Alumno;
 import Models.Grupo;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 
-public class Agregar extends javax.swing.JDialog {
+public class EditarAlumno extends javax.swing.JDialog {
 
     EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("EscuelaBDAPU");
-    public Agregar(java.awt.Frame parent, boolean modal) {
+    private int id;
+    private String Nombre;
+    private String Aula;
+    private int Estatus;
+    
+    public EditarAlumno(java.awt.Frame parent, boolean modal){}
+    public EditarAlumno(java.awt.Frame parent, boolean modal,int id,String Nombre,String Aula,int Estatus) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         llenarCombos();
-    }
-    long id;
-    public Agregar(java.awt.Frame parent, boolean modal, long id) {
-        super(parent, modal);
-        initComponents();
-        this.setLocationRelativeTo(null);
         this.id = id;
-        llenarCombos();
+        this.Nombre = Nombre;
+        this.Aula = Aula;
+        this.Estatus = Estatus;
+        llenarCampos();
     }
     
     private int getStatus(){
         String estatus = (String) boxEstatus.getSelectedItem();
         int Estado = 1;
-        if (estatus.equals(estatus)){}
+        if (estatus.equals("Activo")){}
         else{Estado = 0;}
         return Estado;
     }
-    private int getGrupo(){
+    private long getGrupo(){
         GrupoJpaController control = new GrupoJpaController(emf);
         List<Grupo> grupos = control.findGrupoEntities();
         String texto = (String) boxGrupo.getSelectedItem();
         long Grupo = 0;
         int contador = 0;
         Grupo x ;
-        do{
-            x = grupos.get(contador);
-            if(texto.equals(x.getNombre())){
+        boolean buscar = true;
+        for (int i = 0; buscar ;i++ ) {
+            x = grupos.get(i);
+            if (texto.equals(x.getNombre())) {
                 Grupo = x.getId();
-            }
-        }while(texto.compareTo(texto) != 0);
-        return (int)Grupo;
+                break;
+            }else{continue;}
+        }
+        return Grupo;
     }
-     private void llenarCombos(){
+    private void llenarCombos(){
          String[] arr = new String[2];
          arr[0] = "Activo";
          arr[1] = "Inactivo"; 
          boxEstatus.setModel(new javax.swing.DefaultComboBoxModel<>(arr));
-         
          GrupoJpaController control = new GrupoJpaController(emf);
          List<Grupo> grupos = control.findGrupoEntities();
          String[] arr2 = new String[grupos.size()];
@@ -70,7 +76,7 @@ public class Agregar extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
-        btnAgregar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         boxEstatus = new javax.swing.JComboBox<>();
         boxGrupo = new javax.swing.JComboBox<>();
@@ -83,10 +89,10 @@ public class Agregar extends javax.swing.JDialog {
 
         jLabel3.setText("Estatus:");
 
-        btnAgregar.setText("Agregar");
-        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
@@ -123,7 +129,7 @@ public class Agregar extends javax.swing.JDialog {
                 .addContainerGap(121, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAgregar)
+                .addComponent(btnEditar)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancelar)
                 .addGap(138, 138, 138))
@@ -145,24 +151,38 @@ public class Agregar extends javax.swing.JDialog {
                     .addComponent(boxEstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregar)
+                    .addComponent(btnEditar)
                     .addComponent(btnCancelar))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    private void llenarCampos(){
+        txtNombre.setText(String.valueOf(Nombre));
+        String texto = (String) boxEstatus.getSelectedItem();
+        if(texto.equals("Activo")){
+            boxEstatus.setSelectedIndex(0);
+        }else{
+         boxEstatus.setSelectedIndex(1);
+        }
+        boxGrupo.setSelectedItem(Aula);
+    }
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
        String Nombre = txtNombre.getText();
-       int IdAula = getGrupo();
-       int Estatus = 1;
+       long IdAula = getGrupo();
+        System.out.println(IdAula);
+       int Estatus = getStatus();
        Alumno alumno = new Alumno(Nombre,IdAula,Estatus);
-       alumno.setId(id);
+       alumno.setId((long)id);
        AlumnoJpaController objController = new AlumnoJpaController(emf);
-       objController.create(alumno);
+        try {
+            objController.edit(alumno);
+        } catch (Exception ex) {
+            Logger.getLogger(EditarAlumno.class.getName()).log(Level.SEVERE, null, ex);
+        }
        this.dispose();
-    }//GEN-LAST:event_btnAgregarActionPerformed
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.dispose();
@@ -189,20 +209,23 @@ public class Agregar extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Agregar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Agregar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Agregar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Agregar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Agregar dialog = new Agregar(new javax.swing.JFrame(), true);
+                EditarAlumno dialog = new EditarAlumno(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -217,8 +240,8 @@ public class Agregar extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> boxEstatus;
     private javax.swing.JComboBox<String> boxGrupo;
-    private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEditar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

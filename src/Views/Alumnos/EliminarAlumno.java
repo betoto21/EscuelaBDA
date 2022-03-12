@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 
-public class Eliminar extends javax.swing.JDialog {
+public class EliminarAlumno extends javax.swing.JDialog {
 
     EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("EscuelaBDAPU");
     private int id;
@@ -17,7 +17,7 @@ public class Eliminar extends javax.swing.JDialog {
     private String Aula;
     private int Estatus;
     
-    public Eliminar(java.awt.Frame parent, boolean modal,int id,String Nombre,String Aula,int Estatus) {
+    public EliminarAlumno(java.awt.Frame parent, boolean modal,int id,String Nombre,String Aula,int Estatus) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
@@ -29,7 +29,7 @@ public class Eliminar extends javax.swing.JDialog {
         llenarCampos();
     }
     
-    public Eliminar(java.awt.Frame parent, boolean modal) {
+    public EliminarAlumno(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
@@ -164,7 +164,7 @@ public class Eliminar extends javax.swing.JDialog {
         try {
             objController.edit(alumno);
         } catch (Exception ex) {
-            Logger.getLogger(Editar.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditarAlumno.class.getName()).log(Level.SEVERE, null, ex);
         }
        this.dispose();
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -190,21 +190,23 @@ public class Eliminar extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Eliminar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EliminarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Eliminar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EliminarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Eliminar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EliminarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Eliminar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EliminarAlumno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Eliminar dialog = new Eliminar(new javax.swing.JFrame(), true);
+                EliminarAlumno dialog = new EliminarAlumno(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

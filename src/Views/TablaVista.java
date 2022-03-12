@@ -4,9 +4,10 @@ import Controller.AlumnoJpaController;
 import Controller.GrupoJpaController;
 import Models.Alumno;
 import Models.Grupo;
-import Views.Alumnos.Agregar;
-import Views.Alumnos.Editar;
-import Views.Alumnos.Eliminar;
+import Views.Alumnos.AgregarAlumno;
+import Views.Alumnos.EditarAlumno;
+import Views.Alumnos.EliminarAlumno;
+import Views.Grupos.AgregarGrupo;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
@@ -294,12 +295,13 @@ public class TablaVista extends javax.swing.JFrame {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         if (verAlumnos.isSelected()) {
             long id = tblPrincipal.getRowCount() + 3;
-            Agregar x = new Agregar(this, true,id);
+            AgregarAlumno x = new AgregarAlumno(this, true,id);
             x.setVisible(true);
-            mostrarTablas();
         }else{
-        
+            AgregarGrupo x = new AgregarGrupo(this,true);
+            x.setVisible(true);
         }
+        mostrarTablas();
     }//GEN-LAST:event_btnAgregarActionPerformed
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String texto = txtBuscar.getText();
@@ -328,7 +330,7 @@ public class TablaVista extends javax.swing.JFrame {
             String Aula = String.valueOf(this.tblPrincipal.getValueAt(fila, 2));
             int Estatustexto = getStatus(fila);
             int id = Integer.valueOf(idtextp);
-            Editar x = new Editar(this,true,id,Nombre,Aula,Estatustexto);
+            EditarAlumno x = new EditarAlumno(this,true,id,Nombre,Aula,Estatustexto);
             x.setVisible(true);
         } else{
                 //TODO
@@ -348,7 +350,7 @@ public class TablaVista extends javax.swing.JFrame {
             String Aula = String.valueOf(this.tblPrincipal.getValueAt(fila, 2));
             int Estatustexto = getStatus(fila);
             int id = Integer.valueOf(idtextp);
-            Eliminar x = new Eliminar(this,true,id,Nombre,Aula,Estatustexto);
+            EliminarAlumno x = new EliminarAlumno(this,true,id,Nombre,Aula,Estatustexto);
             x.setVisible(true);
         } else{
                 //TODO
